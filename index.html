@@ -1,1 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-br">
 
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Gerador de Senhas Seguras</title>
+
+<style>
+
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+}
+
+body {
+font-family: Arial, sans-serif;
+
+background: linear-gradient(
+135deg,
+#ffd6e7,
+#fff1b8
+);
+
+min-height: 100vh;
+
+display: flex;
+justify-content: center;
+align-items: center;
+
+padding: 20px;
+}
+
+.container {
+background-color: #fffafc;
+
+width: 100%;
+max-width: 600px;
+
+padding: 35px;
+
+border-radius: 20px;
+
+box-shadow: 0 10px 30px rgba(180, 120, 140, 0.25);
+
+text-align: center;
+
+border: 3px solid #ffd1df;
+}
+
+h1 {
+color: #d66b91;
+
+margin-bottom: 10px;
+
+font-size: 30px;
+}
+
+.descricao {
+color: #765b63;
+
+margin-bottom: 25px;
+
+line-height: 1.5;
+}
+
+.senha {
+background-color: #fff3bd;
+
+border: 2px solid #f2d77b;
+
+padding: 18px;
+
+border-radius: 10px;
+
+font-size: 22px;
+
+font-weight: bold;
+
+word-break: break-all;
+
+margin-bottom: 25px;
+
+min-height: 60px;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+color: #765b40;
+}
+
+.configuracao {
+text-align: left;
+
+margin-bottom: 20px;
+}
+
+label {
+display: block;
+
+margin-bottom: 8px;
+
+font-weight: bold;
+
+color: #765b63;
+}
+
+input[type="number"] {
+width: 100%;
+
+padding: 12px;
+
+border: 2px solid #f3c5d5;
+
+border-radius: 8px;
+
+font-size: 16px;
+
+background-color: #fff;
+}
+
+input[type="number"]:focus {
+outline: none;
+
+border-color: #e89ab4;
+}
+
+.opcao {
+margin: 12px 0;
+}
+
+.opcao input {
+margin-right: 8px;
+
+accent-color: #e89ab4;
+}
+
+button {
+border: none;
+
+background-color: #e89ab4;
+
+color: white;
+
+padding: 14px 25px;
+
+border-radius: 10px;
+
+font-size: 17px;
+
+font-weight: bold;
+
+cursor: pointer;
+
+margin-top: 10px;
+}
+
+button:hover {
+background-color: #d9789a;
+}
+
+.resultado {
+margin-top: 25px;
+
+padding: 15px;
+
+border-radius: 10px;
+
+background-color: #fff3bd;
+
+color: #765b40;
+
+font-weight: bold;
+
+border: 2px solid #f2d77b;
+}
+
+.forca {
+margin-top: 15px;
+
+font-size: 18px;
+}
+
+.dica {
+margin-top: 20px;
+
+font-size: 14px;
+
+color: #876d75;
+
+line-height: 1.5;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🔐 Gerador de Senhas</h1>
+
+<p class="descricao">
+Crie uma senha mais segura utilizando letras,
+números e caracteres especiais.
+</p>
+
+<div class="senha" id="senha">
+Sua senha aparecerá aqui
+</div>
+
+<div class="configuracao">
+
+<label for="tamanho">
+Quantidade de caracteres:
+</label>
+
+<input
+type="number"
+id="tamanho"
+min="4"
+max="30"
+value="12"
+>
+
+<div class="opcao">
+
+<input
+type="checkbox"
+id="maiusculas"
+checked
+>
+
+<label for="maiusculas">
+Usar letras maiúsculas
+</label>
+
+</div>
+
+<div class="opcao">
+
+<input
+type="checkbox"
+id="minusculas"
+checked
+>
+
+<label for="minusculas">
+Usar letras minúsculas
+</label>
+
+</div>
+
+<div class="opcao">
+
+<input
+type="checkbox"
+id="numeros"
+checked
+>
+
+<label for="numeros">
+Usar números
+</label>
+
+</div>
+
+<div class="opcao">
+
+<input
+type="checkbox"
+id="especiais"
+checked
+>
+
+<label for="especiais">
+Usar caracteres especiais
+</label>
+
+</div>
+
+</div>
+
+<button onclick="gerarSenha()">
+🔄 Gerar senha
+</button>
+
+<div class="resultado">
+
+<div id="mensagem">
+Escolha as opções e gere sua senha.
+</div>
+
+<div class="forca" id="forca">
+</div>
+
+</div>
+
+<p class="dica">
+💡 Dica: quanto maior e mais variada for a senha,
+mais difícil será adivinhá-la.
+</p>
+
+</div>
+
+
+<script>
+
+function gerarSenha() {
+
+let tamanho =
+Number(document.getElementById("tamanho").value);
+
+let usarMaiusculas =
+document.getElementById("maiusculas").checked;
+
+let usarMinusculas =
+document.getElementById("minusculas").checked;
+
+let usarNumeros =
+document.getElementById("numeros").checked;
+
+let usarEspeciais =
+document.getElementById("especiais").checked;
+
+
+let maiusculas =
+"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+let minusculas =
+"abcdefghijklmnopqrstuvwxyz";
+
+let numeros =
+"0123456789";
+
+let especiais =
+"!@#$%&*?";
+
+
+let caracteres = "";
+
+
+if (usarMaiusculas) {
+caracteres += maiusculas;
+}
+
+if (usarMinusculas) {
+caracteres += minusculas;
+}
+
+if (usarNumeros) {
+caracteres += numeros;
+}
+
+if (usarEspeciais) {
+caracteres += especiais;
+}
+
+
+if (caracteres === "") {
+
+document.getElementById("senha").textContent =
+"Escolha pelo menos uma opção.";
+
+document.getElementById("mensagem").textContent =
+"Não foi possível gerar a senha.";
+
+document.getElementById("forca").textContent =
+"";
+
+return;
+}
+
+
+if (tamanho < 4) {
+tamanho = 4;
+}
+
+if (tamanho > 30) {
+tamanho = 30;
+}
+
+
+let senha = "";
+
+
+for (let i = 0; i < tamanho; i++) {
+
+let numeroAleatorio =
+Math.floor(
+Math.random() * caracteres.length
+);
+
+senha += caracteres[numeroAleatorio];
+}
+
+
+document.getElementById("senha").textContent =
+senha;
+
+
+analisarSenha(senha);
+}
+
+
+function analisarSenha(senha) {
+
+let pontos = 0;
+
+
+if (senha.length >= 8) {
+pontos++;
+}
+
+if (senha.length >= 12) {
+pontos++;
+}
+
+if (/[A-Z]/.test(senha)) {
+pontos++;
+}
+
+if (/[a-z]/.test(senha)) {
+pontos++;
+}
+
+if (/[0-9]/.test(senha)) {
+pontos++;
+}
+
+if (/[^A-Za-z0-9]/.test(senha)) {
+pontos++;
+}
+
+
+let mensagem = "";
+let forca = "";
+
+
+if (pontos <= 2) {
+
+mensagem =
+"A senha precisa ser mais forte.";
+
+forca =
+"🔴 Força: fraca";
+
+} else if (pontos <= 4) {
+
+mensagem =
+"A senha possui uma segurança razoável.";
+
+forca =
+"🟡 Força: média";
+
+} else {
+
+mensagem =
+"Boa! Essa senha possui vários elementos.";
+
+forca =
+"🟢 Força: forte";
+}
+
+
+document.getElementById("mensagem").textContent =
+mensagem;
+
+document.getElementById("forca").textContent =
+forca;
+}
+
+</script>
+
+</body>
+
+</html>
